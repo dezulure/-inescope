@@ -42,3 +42,23 @@ def authenticated_user(api_manager, test_user):
     test_user["id"] = register_data["id"]
     api_manager.auth_api.authenticate(user_creds=(test_user["email"], test_user["password"]))
     return test_user
+
+
+@pytest.fixture(scope="function")
+def test_movie():
+    return {
+        "name": DataGenerator.generate_random_name_movie(),
+        "imageUrl": DataGenerator.generate_random_image_url(),
+        "price": DataGenerator.generate_random_price(),
+        "description": DataGenerator.generate_description(),
+        "location": DataGenerator.generate_location(),
+        "published": DataGenerator.generate_random_published_status(),
+    }
+
+
+@pytest.fixture(scope="function")
+def created_movie(api_manager,test_movie):
+    response = api_manager.movies_api.create_movie(test_movie).json()
+    test_movie["id"] = response["id"]
+    return test_movie
+
